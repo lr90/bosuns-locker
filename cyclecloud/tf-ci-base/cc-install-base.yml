@@ -1,0 +1,29 @@
+#cloud-config
+#
+# installs CycleCloud on the VM
+#
+
+yum_repos:
+  azure-cli:
+    baseurl: https://packages.microsoft.com/yumrepos/azure-cli
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    name: Azure CLI
+  cyclecloud:
+    baseurl: https://packages.microsoft.com/yumrepos/cyclecloud
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    name: Cycle Cloud
+
+packages:
+- java-1.8.0-openjdk-headless
+- azure-cli
+- cyclecloud8
+
+runcmd:
+- sed -i --follow-symlinks "s/webServerPort=.*/webServerPort=80/g" /opt/cycle_server/config/cycle_server.properties
+- sed -i --follow-symlinks "s/webServerSslPort=.*/webServerSslPort=443/g" /opt/cycle_server/config/cycle_server.properties
+- sed -i --follow-symlinks "s/webServerEnableHttps=.*/webServerEnableHttps=true/g" /opt/cycle_server/config/cycle_server.properties
+- systemctl restart cycle_server
